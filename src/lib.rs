@@ -1,10 +1,9 @@
-
 use bevy::ecs::system::Command;
 use bevy::input::mouse::MouseWheel;
+use bevy::render::render_resource::AsBindGroup;
 use bevy::window::PrimaryWindow;
 use bevy::{
     prelude::*,
-    render::render_resource::AsBindGroup,
     sprite::{Material2d, MaterialMesh2dBundle},
 };
 
@@ -43,7 +42,7 @@ pub struct InfinityGridMaterial2D {
     #[uniform(3)]
     pub(crate) size: Vec4,
     #[uniform(4)]
-    pub(crate) pan: Vec4
+    pub(crate) pan: Vec4,
 }
 
 impl Material2d for InfinityGridMaterial2D {
@@ -64,7 +63,7 @@ pub fn setup(
         thin_color: THIN_LINE.rgba_to_vec4(),
         bg_color: Color::rgba(0., 0., 0., 0.6).rgba_to_vec4(),
         size: Vec4::new(window.width(), window.height(), 0., 0.),
-        pan: Vec4::new(0., 0., 0., 0.)
+        pan: Vec4::new(0., 0., 0., 0.),
     });
 
     commands.add(MaterialIdUpdate(material.id()));
@@ -84,8 +83,6 @@ pub fn setup(
 
 pub fn update_material(
     mut mouse_wheel: EventReader<MouseWheel>,
-    // buttons: Res<ButtonInput<MouseButton>>,
-    // mut mouse_cursor: EventReader<CursorMoved>,
     material_id: Res<MaterialId>,
     mut materials: ResMut<Assets<InfinityGridMaterial2D>>,
 ) {
@@ -104,35 +101,3 @@ pub fn update_material(
     }
 }
 
-pub fn on_draggable(
-    mut commands: Commands,
-    mouse_button: Res<ButtonInput<MouseButton>>,
-    pressed: Query<Entity, With<Draggable>>,
-    released: Query<Entity, With<Dragged>>,
-) {
-    if mouse_button.just_pressed(MouseButton::Left) {
-        if let Some(entity) = pressed.iter().next() {
-            commands.entity(entity).insert(Dragged);
-        }
-    } else if mouse_button.just_released(MouseButton::Left) {
-        for entity in released.iter() {
-            commands.entity(entity).remove::<Dragged>();
-
-            commands.entity(entity).insert(Dropped);
-        }
-    }
-}
-
-pub fn on_drag(
-    mut mouse_cursor: EventReader<CursorMoved>,
-    mut dragged: Query<(Entity, &mut Transform, &GlobalTransform), Added<Dragged>>,
-) {
-    for _ev in mouse_cursor.read() {
-        if let Some((_entity, mut transform, _global_transform)) = dragged.iter_mut().next() {
-            if let Some(delta) = _ev.delta {
-                transform.translation.x -= delta.x;
-                transform.translation.y -= delta.y;
-            }
-        }
-    }
-}

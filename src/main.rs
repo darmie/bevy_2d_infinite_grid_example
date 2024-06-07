@@ -29,6 +29,5 @@ fn main() {
         .add_plugins((Material2dPlugin::<InfinityGridMaterial2D>::default(),))
         .add_systems(Startup, setup)
         .add_systems(Update, update_material)
-        .add_systems(Update, (on_draggable, on_drag))
         .run();
 }
