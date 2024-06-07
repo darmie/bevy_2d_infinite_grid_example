@@ -1,0 +1,22 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./index.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="root" class="overflow-hidden"></div>
+  <script type="module">
+    import init from './infinity_graph.js';
+    init(new URL('./infinity_graph.wasm', import.meta.url)).catch((error) => {
+      if (!error.message.startsWith("Using exceptions for control flow, don't mind me. This isn't actually an error!")) {
+        throw error;
+      }
+    });
+  </script>
+  <canvas id="infinite-2d-graph-canvas" width="100%" height="100%"></canvas>
+</body>
+
+</html>

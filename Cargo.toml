@@ -1,0 +1,31 @@
+[package]
+name = "bevy_infinity_graph"
+version = "0.1.0"
+edition = "2021"
+
+
+[profile.release]
+opt-level = 'z'
+lto = true
+codegen-units = 1
+
+# Enable a small amount of optimization in debug mode
+[profile.dev]
+opt-level = 's'
+lto = 'thin'
+
+# Enable high optimizations for dependencies but not for our code:
+[profile.dev.package."*"]
+opt-level = 's'
+
+
+[dependencies]
+bevy = { version = "0.13.2", default-features = false, features=[ "bevy_sprite","bevy_render", "bevy_asset", "bevy_winit", "x11"] }
+wasm-bindgen = { version = "0.2.86", optional = true}
+
+[features]
+webgl2 = ["bevy/webgl2", "dep:wasm-bindgen"]
+webgpu = ["bevy/webgpu", "dep:wasm-bindgen"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
